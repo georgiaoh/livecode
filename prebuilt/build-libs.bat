@@ -100,8 +100,10 @@ IF %MODE%==debug (
 REM If the TOOL version is 15, then the CRT version 141
 IF %TOOL%==15 (
 	SET TOOL_CRT=141
+	SET VCVARS_VER=-vcvars_ver=14.1
 ) ELSE (
 	SET TOOL_CRT=%TOOL%0
+	SET VCVARS_VER=
 )
 
 REM Set the suffix that should be used by all libraries
@@ -114,7 +116,12 @@ IF %ARCH%==x86 (
 	SET ARCH_STRING=amd64
 )
 
-SET VSCONFIGTOOL="%ProgramFiles(x86)%\Microsoft Visual Studio %TOOL%.0\VC\vcvarsall.bat"
+IF %TOOL%==15 (
+	REM Look for build tools within VS 2017 folder
+	SET VSCONFIGTOOL="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
+) ELSE (
+	SET VSCONFIGTOOL="%ProgramFiles(x86)%\Microsoft Visual Studio %TOOL%.0\VC\vcvarsall.bat"
+)
 
 REM Ensure the desired vsvarsall.bat file exists for the chosen options
 IF NOT EXIST %VSCONFIGTOOL% (
@@ -123,7 +130,7 @@ IF NOT EXIST %VSCONFIGTOOL% (
 )
 
 REM Configure the visual studio tools
-CALL %VSCONFIGTOOL% %ARCH_STRING%
+CALL %VSCONFIGTOOL% %ARCH_STRING% %VCVARS_VER%
 WHERE /Q cl 1>NUL 2>NUL
 IF %ERRORLEVEL% NEQ 0 (
 	ECHO Configuration of Visual Studio tools failed
