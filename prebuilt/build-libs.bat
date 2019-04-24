@@ -100,10 +100,8 @@ IF %MODE%==debug (
 REM If the TOOL version is 15, then the CRT version 141
 IF %TOOL%==15 (
 	SET TOOL_CRT=141
-	SET VCVARS_VER=-vcvars_ver=14.1
 ) ELSE (
 	SET TOOL_CRT=%TOOL%0
-	SET VCVARS_VER=
 )
 
 REM Set the suffix that should be used by all libraries
@@ -130,7 +128,7 @@ IF NOT EXIST %VSCONFIGTOOL% (
 )
 
 REM Configure the visual studio tools
-CALL %VSCONFIGTOOL% %ARCH_STRING% %VCVARS_VER%
+CALL %VSCONFIGTOOL% %ARCH_STRING%
 WHERE /Q cl 1>NUL 2>NUL
 IF %ERRORLEVEL% NEQ 0 (
 	ECHO Configuration of Visual Studio tools failed
